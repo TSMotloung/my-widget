@@ -1,0 +1,89 @@
+<!-- Widget Configuration -->
+<script>
+  window.ChatWidgetConfig = {
+    webhook: {
+      url: 'https://primary-production-9a3b.up.railway.app/webhook/1f5e10fe-5a8e-42ab-a56d-af903f75c5da/chat',
+      route: 'general',
+    },
+    branding: {
+      logo: 'https://perfumeland.co.za/wp-content/uploads/2021/12/perfume-logo-400.png',
+      name: 'PERFUME LAND',
+      welcomeText: 'Get instant answers to your questions!',
+      responseTimeText: 'CLICK the button below to start Chatting',
+    },
+    style: {
+      primaryColor: '#10b981',
+      secondaryColor: '#059669',
+      position: 'right',
+      backgroundColor: '#ffffff',
+      fontColor: '#1f2937',
+    },
+    suggestedQuestions: [
+      'What are your best-selling perfumes?',
+      'How do I choose the right fragrance?',
+      'What are your shipping options?',
+      'Do you offer samples?'
+    ]
+  };
+</script>
+
+<script src="https://cdn.jsdelivr.net/gh/funtastic418/chat-widget@main/chat-widget.js"></script>
+
+<!-- Targeted styling for branding only -->
+<style>
+  /* Only target very specific branding elements, not the entire widget */
+  .chat-widget small:contains("powered"),
+  .chat-widget small:contains("n8n"),
+  .chat-widget .attribution,
+  .chat-widget .powered-by,
+  .chat-widget a[href*="n8n"] {
+    color: white !important;
+    background-color: white !important;
+    font-size: 0.1px !important;
+    pointer-events: none !important;
+  }
+</style>
+
+<script>
+  // Very targeted function that only affects branding text
+  function hideBrandingOnly() {
+    // Only look for elements that specifically contain "powered by" text
+    const allElements = document.querySelectorAll('*');
+    
+    allElements.forEach(el => {
+      // Only process if it's a text-only element (leaf node with text)
+      if (el.children.length === 0 && el.textContent) {
+        const text = el.textContent.trim();
+        
+        // Only modify if it's EXACTLY or PRIMARILY branding text
+        if (text.toLowerCase() === 'powered by n8n' || 
+            text.toLowerCase() === 'powered by' ||
+            (text.toLowerCase().includes('powered by') && text.length < 30)) {
+          
+          el.style.color = 'white';
+          el.style.backgroundColor = 'white';
+          el.style.fontSize = '0.1px';
+          el.style.pointerEvents = 'none';
+          el.style.userSelect = 'none';
+        }
+      }
+    });
+  }
+  
+  // Wait longer for widget to fully initialize before touching anything
+  setTimeout(() => {
+    hideBrandingOnly();
+    
+    // Check less frequently and only for a limited time
+    let checkCount = 0;
+    const brandingCheck = setInterval(() => {
+      hideBrandingOnly();
+      checkCount++;
+      
+      // Stop checking after 30 seconds to avoid interfering long-term
+      if (checkCount > 15) {
+        clearInterval(brandingCheck);
+      }
+    }, 2000);
+  }, 5000); // Wait 5 seconds before doing anything
+</script>

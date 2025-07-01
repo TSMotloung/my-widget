@@ -4,6 +4,59 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Perfume Land Chat Widget</title>
+  <!-- Other meta tags, title, etc. -->
+  
+  <script>
+    // Function to clean markdown symbols before displaying messages
+    function cleanMessage(text) {
+      return text
+        .replace(/\*\*/g, '')  // Remove **bold**
+        .replace(/\*/g, '')    // Remove *italics* 
+        .replace(/#/g, '');    // Remove #headers
+    }
+
+    // Modified display function (use this instead of innerHTML)
+    function displayCleanMessage(message) {
+      const chatContainer = document.getElementById('chat-messages');
+      const messageElement = document.createElement('div');
+      messageElement.textContent = cleanMessage(message); // Critical: uses textContent
+      chatContainer.appendChild(messageElement);
+    }
+
+    // Replace your current message handler with this:
+    function handleIncomingMessage(data) {
+      displayCleanMessage(data.output || data.message); // Handles both JSON formats
+    }
+  </script>
+   <style>
+    /* Solution 3: CSS-only markdown symbol suppression */
+    .chat-message {
+      white-space: pre-wrap;       /* Preserves spaces/line breaks */
+      font-family: sans-serif;    /* Uses neutral font */
+      unicode-bidi: plaintext;    /* Prevents special character interpretation */
+    }
+    
+    /* If messages are in paragraphs or divs */
+    .chat-message p, 
+    .chat-message div {
+      all: initial;               /* Resets all properties */
+      display: inline;            /* Prevents block formatting */
+      white-space: pre-wrap;
+    }
+    
+    /* Hides asterisks and hashes visually */
+    .chat-message::before,
+    .chat-message::after,
+    .chat-message *::before,
+    .chat-message *::after {
+      content: none !important;
+    }
+    
+    /* Specific character hiding (asterisks and hashes) */
+    .chat-message .chat-message-text::after {
+      content: none;
+    }
+  </style>
 </head>
 <body>
 
